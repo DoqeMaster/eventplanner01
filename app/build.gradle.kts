@@ -34,14 +34,15 @@ android {
 }
 
 dependencies {
-    implementation("androidx.room:room-runtime:2.8.4")
-    annotationProcessor("androidx.room:room-compiler:2.8.4")
+    implementation("androidx.room.runtime:2.8.4")
+    annotationProcessor("androidx.room.compiler:2.8.4")
     implementation(libs.core.ktx)
     implementation(libs.room.runtime)
     annotationProcessor(libs.room.compiler)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
     implementation(libs.constraintlayout)
 
     testImplementation(libs.junit)
