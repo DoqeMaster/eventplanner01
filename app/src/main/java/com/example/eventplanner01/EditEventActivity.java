@@ -1,5 +1,10 @@
 package com.example.eventplanner01;
 
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,6 +17,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.eventplanner01.data.Event;
 import com.example.eventplanner01.data.EventDatabase;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.Executors;
 
 public class EditEventActivity extends AppCompatActivity {
@@ -76,11 +85,14 @@ public class EditEventActivity extends AppCompatActivity {
 
             Executors.newSingleThreadExecutor().execute(() -> {
                 if (eventId == -1) {
-                    EventDatabase.getInstance(getApplicationContext()).eventDao().insert(event);
+                    long newId = EventDatabase.getInstance(getApplicationContext()).eventDao().insert(event);
+                    eventId = (int) newId;
+                    event.setId(eventId);
                 } else {
                     event.setId(eventId);
                     EventDatabase.getInstance(getApplicationContext()).eventDao().update(event);
                 }
+                scheduleReminder(eventId, name, reminderTime);
                 runOnUiThread(this::finish);
             });
         });
@@ -98,5 +110,58 @@ public class EditEventActivity extends AppCompatActivity {
                 runOnUiThread(this::finish);
             });
         });
+    }
+
+    @SuppressLint("ScheduleExactAlarm")
+    private void scheduleReminder(int reminderId, String eventName, String reminderTime) {
+        if (TextUtils.isEmpty(reminderTime)) {
+            return;
+        }
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
+        formatter.setLenient(false);
+        Date reminderDate;
+        try {
+            reminderDate = formatter.parse(reminderTime);
+        } catch (ParseException e) {
+            runOnUiThread(() -> Toast.makeText(this,
+                    "Reminder format should be yyyy-MM-dd HH:mm.", Toast.LENGTH_LONG).show());
+            return;
+        }
+
+        if (reminderDate == null) {
+            return;
+        }
+
+        long triggerAtMillis = reminderDate.getTime();
+        if (triggerAtMillis <= System.currentTimeMillis()) {
+            runOnUiThread(() -> Toast.makeText(this,
+                    "Reminder time must be in the future.", Toast.LENGTH_LONG).show());
+            return;
+        }
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        if (alarmManager == null) {
+            return;
+        }
+
+        Intent intent = new Intent(this, ReminderReceiver.class)
+                .putExtra(ReminderReceiver.EXTRA_EVENT_ID, reminderId)
+                .putExtra(ReminderReceiver.EXTRA_EVENT_TITLE, eventName);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                reminderId,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                && !alarmManager.canScheduleExactAlarms()) {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+        } else {
+            alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    triggerAtMillis,
+                    pendingIntent);
+        }
     }
 }
