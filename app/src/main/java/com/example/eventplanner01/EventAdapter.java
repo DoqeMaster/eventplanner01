@@ -15,7 +15,16 @@ import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
+    public interface OnItemClickListener {
+        void onItemClick(Event event);
+    }
+
     private final List<Event> items = new ArrayList<>();
+    private final OnItemClickListener listener;
+
+    public EventAdapter(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public void setItems(List<Event> events) {
         items.clear();
@@ -36,6 +45,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         Event event = items.get(position);
         holder.title.setText(event.getName());
         holder.datetime.setText(event.getDate() + " " + event.getTime());
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(event);
+            }
+        });
     }
 
     @Override
@@ -44,8 +58,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     static class EventViewHolder extends RecyclerView.ViewHolder {
-        TextView title;
-        TextView datetime;
+        private final TextView title;
+        private final TextView datetime;
 
         EventViewHolder(@NonNull View itemView) {
             super(itemView);

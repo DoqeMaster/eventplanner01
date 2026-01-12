@@ -20,6 +20,9 @@ public interface EventDao {
     @Delete
     void delete(Event event);
 
+    @Query("SELECT * FROM events WHERE id = :id LIMIT 1")
+    Event getEventById(int id);
+
     @Query("SELECT * FROM events ORDER BY date, time")
     List<Event> getAllEvents();
 }

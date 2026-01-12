@@ -10,12 +10,12 @@ public class Event {
     private int id;
 
     private String name;
-    private String date;         // yyyy-MM-dd
-    private String time;         // HH:mm
+    private String date;
+    private String time;
     private String location;
     private String notes;
-    private String reminderTime; // yyyy-MM-dd HH:mm
-    private String attendance;   // Attending / Undecided / Not attending
+    private String reminderTime;
+    private String attendance;
 
     public Event(String name, String date, String time, String location,
                  String notes, String reminderTime, String attendance) {
@@ -28,28 +28,67 @@ public class Event {
         this.attendance = attendance;
     }
 
-    // Getters & setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getDate() { return date; }
-    public void setDate(String date) { this.date = date; }
+    public String getName() {
+        return name;
+    }
 
-    public String getTime() { return time; }
-    public void setTime(String time) { this.time = time; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
+    public String getDate() {
+        return date;
+    }
 
-    public String getNotes() { return notes; }
-    public void setNotes(String notes) { this.notes = notes; }
+    public void setDate(String date) {
+        this.date = date;
+    }
 
-    public String getReminderTime() { return reminderTime; }
-    public void setReminderTime(String reminderTime) { this.reminderTime = reminderTime; }
+    public String getTime() {
+        return time;
+    }
 
-    public String getAttendance() { return attendance; }
-    public void setAttendance(String attendance) { this.attendance = attendance; }
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getReminderTime() {
+        return reminderTime;
+    }
+
+    public void setReminderTime(String reminderTime) {
+        this.reminderTime = reminderTime;
+    }
+
+    public String getAttendance() {
+        return attendance;
+    }
+
+    public void setAttendance(String attendance) {
+        this.attendance = attendance;
+    }
 }

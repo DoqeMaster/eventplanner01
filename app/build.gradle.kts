@@ -34,8 +34,7 @@ android {
 }
 
 dependencies {
-    implementation("androidx.room.runtime:2.8.4")
-    annotationProcessor("androidx.room.compiler:2.8.4")
+
     implementation(libs.core.ktx)
     implementation(libs.room.runtime)
     annotationProcessor(libs.room.compiler)
