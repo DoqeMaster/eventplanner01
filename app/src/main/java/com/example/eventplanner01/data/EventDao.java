@@ -23,6 +23,9 @@ public interface EventDao {
     @Query("SELECT * FROM events WHERE id = :id LIMIT 1")
     Event getEventById(int id);
 
+    @Query("SELECT * FROM events ORDER BY date, time LIMIT 1")
+    Event getNextEvent();
+
     @Query("SELECT * FROM events ORDER BY date, time")
     List<Event> getAllEvents();
 }
